@@ -67,6 +67,7 @@ namespace CompressPDFAdobe
         private void InitializeComponent()
         {
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             dgvFiles = new DataGridView();
             FileName = new DataGridViewTextBoxColumn();
             Status = new DataGridViewTextBoxColumn();
@@ -97,16 +98,24 @@ namespace CompressPDFAdobe
             dgvFiles.AllowUserToDeleteRows = false;
             dgvFiles.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvFiles.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            dgvFiles.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvFiles.Columns.AddRange(new DataGridViewColumn[] { FileName, Status, Mensaje, FileNameResult });
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Window;
+            dataGridViewCellStyle1.BackColor = SystemColors.Highlight;
             dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle1.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
             dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dgvFiles.DefaultCellStyle = dataGridViewCellStyle1;
+            dgvFiles.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dgvFiles.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvFiles.Columns.AddRange(new DataGridViewColumn[] { FileName, Status, Mensaje, FileNameResult });
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            dgvFiles.DefaultCellStyle = dataGridViewCellStyle2;
             dgvFiles.Location = new Point(12, 88);
             dgvFiles.Name = "dgvFiles";
             dgvFiles.ReadOnly = true;
@@ -182,30 +191,35 @@ namespace CompressPDFAdobe
             // 
             trkCompressionLevel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             trkCompressionLevel.Location = new Point(837, 297);
+            trkCompressionLevel.Maximum = 3;
             trkCompressionLevel.Minimum = 1;
             trkCompressionLevel.Name = "trkCompressionLevel";
             trkCompressionLevel.Size = new Size(257, 69);
             trkCompressionLevel.TabIndex = 2;
-            trkCompressionLevel.Value = 5;
+            trkCompressionLevel.Value = 2;
             // 
             // btnSelectFolder
             // 
             btnSelectFolder.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnSelectFolder.BackColor = SystemColors.ControlDark;
             btnSelectFolder.Location = new Point(12, 414);
             btnSelectFolder.Name = "btnSelectFolder";
             btnSelectFolder.Size = new Size(382, 73);
             btnSelectFolder.TabIndex = 3;
             btnSelectFolder.Text = "Seleccionar Carpeta";
+            btnSelectFolder.UseVisualStyleBackColor = false;
             btnSelectFolder.Click += btnSelectFolder_Click;
             // 
             // btnCompress
             // 
             btnCompress.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnCompress.BackColor = SystemColors.GradientActiveCaption;
             btnCompress.Location = new Point(740, 414);
             btnCompress.Name = "btnCompress";
             btnCompress.Size = new Size(354, 73);
             btnCompress.TabIndex = 4;
-            btnCompress.Text = "Comprimir PDFs";
+            btnCompress.Text = "Reducir PDFs";
+            btnCompress.UseVisualStyleBackColor = false;
             btnCompress.Click += btnCompress_Click;
             // 
             // progressBar
@@ -302,6 +316,7 @@ namespace CompressPDFAdobe
             Controls.Add(btnCompress);
             Name = "MainForm";
             Text = "PDF Compressor";
+            WindowState = FormWindowState.Maximized;
             ((System.ComponentModel.ISupportInitialize)dgvFiles).EndInit();
             ((System.ComponentModel.ISupportInitialize)trkCompressionLevel).EndInit();
             panel1.ResumeLayout(false);
@@ -435,7 +450,7 @@ namespace CompressPDFAdobe
 
                             dgvFiles.Invoke(() =>
                             {
-                                dgvFiles.Rows[i].Cells["Status"].Value = "Comprimido";
+                                dgvFiles.Rows[i].Cells["Status"].Value = "Reducido";
                                 dgvFiles.Rows[i].Cells["Mensaje"].Value = $"Fichero original: {FormatSize(originalSize)}. Fichero reducido: {FormatSize(compressedSize)}. % Reducción: {reduction} ";
                                 dgvFiles.Rows[i].Cells["FileNameResult"].Value = $"{outputFilePath}";
                                
@@ -493,9 +508,10 @@ namespace CompressPDFAdobe
         {
             return value switch
             {
-                <= 3 => CompressionLevel.LOW,
-                <= 7 => CompressionLevel.MEDIUM,
-                _ => CompressionLevel.HIGH,
+                1 => CompressionLevel.LOW,
+                2 => CompressionLevel.MEDIUM,
+                3 => CompressionLevel.HIGH,
+                _ => CompressionLevel.MEDIUM,
             };
         }
 
